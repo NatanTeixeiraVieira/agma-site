@@ -5,7 +5,9 @@ import Router from './router/router';
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
+      <body>
+        <Router />
+      </body>
     </QueryClientProvider>
   );
 }
