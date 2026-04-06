@@ -17,8 +17,8 @@ export default function TypeTabs({
         {types.map((dt) => (
           <button
             key={dt.id}
-            onClick={() => onSelect(dt.name)}
-            className={`px-5 py-2.5 text-[11px] md:text-xs font-semibold uppercase tracking-wider rounded-md transition-colors ${
+            onClick={() => onSelect(dt.id)}
+            className={`px-5 py-2.5 cursor-pointer text-[11px] md:text-xs font-semibold uppercase tracking-wider rounded-md transition-colors ${
               activeType === dt.name
                 ? 'bg-white text-primary shadow-md'
                 : 'bg-white/90 text-foreground hover:bg-white'

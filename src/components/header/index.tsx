@@ -1,20 +1,49 @@
-import { Outlet } from 'react-router';
+import { Link, Outlet } from 'react-router';
 import { Search } from 'lucide-react';
 import { useRef } from 'react';
 import { agmaUrl } from '@/constants/agma-url';
 
+type NavItem = {
+  label: string;
+  icon: string;
+  href?: string;
+  to?: string;
+};
+
+const navItems: NavItem[] = [
+  { label: 'HOME', icon: '/icons/home.png', href: `${agmaUrl}` },
+  {
+    label: 'QUEM SOMOS',
+    icon: '/icons/info.png',
+    href: `${agmaUrl}/quemsomos`,
+  },
+  {
+    label: 'FAÇA PARTE',
+    icon: '/icons/puzzle.png',
+    href: `${agmaUrl}#faca-parte`,
+  },
+  { label: 'DOAÇÕES', icon: '/icons/money.png', href: `${agmaUrl}#doacoes` },
+  { label: 'PARCEIROS', icon: '/icons/star.png', href: `${agmaUrl}#parceiros` },
+  { label: 'NOTÍCIAS', icon: '/icons/news.png', href: `${agmaUrl}/noticias` },
+  {
+    label: 'CONTATO',
+    icon: '/icons/envelope.png',
+    href: `${agmaUrl}/noticias#contato`,
+  },
+  { label: 'TRANSPARÊNCIA', icon: '/icons/file.png', to: '/transparencia' },
+];
+
 export default function Layout() {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  console.log('oioi');
-
-  const handleSearchClick = () => {
+  const handleSearchClick = (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
     window.location.href = `${agmaUrl}?s=${encodeURIComponent(searchInputRef.current?.value ?? '')}`;
   };
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="w-full border-b text-base">
+      <header className="w-full text-base">
         <div className="flex items-center justify-between max-w-330 mx-auto px-3 py-6 bg-white">
           <div className="flex items-center gap-4">
             <a href={agmaUrl}>
@@ -27,16 +56,17 @@ export default function Layout() {
           </div>
           <div className="flex items-center gap-12">
             <div className="relative">
-              <input
-                type="text"
-                placeholder="Pesquisar..."
-                ref={searchInputRef}
-                className="w-89 bg-grey h-11.5 rounded-lg py-2 p-2.5 pr-10 outline-none"
-              />
-              <Search
-                onClick={handleSearchClick}
-                className="absolute right-4 top-3 w-5 h-5 text-black"
-              />
+              <form onSubmit={handleSearchClick}>
+                <input
+                  type="text"
+                  placeholder="Pesquisar..."
+                  ref={searchInputRef}
+                  className="w-89 bg-grey h-11.5 rounded-lg py-2 p-2.5 pr-10 outline-none"
+                />
+                <button type="submit">
+                  <Search className="absolute right-4 cursor-pointer top-3 w-5 h-5 text-black" />
+                </button>
+              </form>
             </div>
 
             <ul className="flex gap-1.5">
@@ -83,79 +113,42 @@ export default function Layout() {
             </ul>
           </div>
         </div>
-
-        <nav className="flex items-center justify-center gap-18.5 py-5 bg-grey font-semibold">
-          <div className="flex items-center gap-1.5 cursor-pointer">
-            <img
-              src="/icons/home.png"
-              alt="ícone HOME"
-              width={20}
-              height={20}
-            />
-            HOME
-          </div>
-
-          <div className="flex items-center gap-1.5 cursor-pointer">
-            <img
-              src="/icons/info.png"
-              alt="ícone QUEM SOMOS"
-              width={20}
-              height={20}
-            />
-            QUEM SOMOS
-          </div>
-
-          <div className="flex items-center gap-1.5 cursor-pointer">
-            <img
-              src="/icons/puzzle.png"
-              alt="ícone FAÇA PARTE"
-              width={20}
-              height={20}
-            />
-            FAÇA PARTE
-          </div>
-
-          <div className="flex items-center gap-1.5 cursor-pointer">
-            <img
-              src="/icons/money.png"
-              alt="ícone DOAÇÕES"
-              width={20}
-              height={20}
-            />
-            DOAÇÕES
-          </div>
-
-          <div className="flex items-center gap-1.5 cursor-pointer">
-            <img
-              src="/icons/star.png"
-              alt="ícone PARCEIROS"
-              width={20}
-              height={20}
-            />
-            PARCEIROS
-          </div>
-
-          <div className="flex items-center gap-1.5 cursor-pointer">
-            <img
-              src="/icons/news.png"
-              alt="ícone NOTÍCIAS"
-              width={20}
-              height={20}
-            />
-            NOTÍCIAS
-          </div>
-
-          <div className="flex items-center gap-1.5 cursor-pointer">
-            <img
-              src="/icons/envelope.png"
-              alt="ícone CONTATO"
-              width={20}
-              height={20}
-            />
-            CONTATO
-          </div>
-        </nav>
       </header>
+
+      <nav className="sticky top-0 z-40 flex items-center justify-center gap-18.5 py-5 bg-grey font-semibold w-full left-0 right-0">
+        {navItems.map((item) =>
+          item.to ? (
+            <Link
+              key={item.label}
+              to={item.to}
+              className="flex items-center gap-1.5 cursor-pointer"
+            >
+              <img
+                src={item.icon}
+                alt={`ícone ${item.label}`}
+                width={item.label === 'TRANSPARÊNCIA' ? 16 : 20}
+                height={item.label === 'TRANSPARÊNCIA' ? 16 : 20}
+              />
+              {item.label}
+            </Link>
+          ) : (
+            <a
+              key={item.label}
+              href={item.href}
+              className="flex items-center gap-1.5 cursor-pointer"
+            >
+              <img
+                src={item.icon}
+                alt={`ícone ${item.label}`}
+                width={20}
+                height={20}
+              />
+              {item.label}
+            </a>
+          ),
+        )}
+      </nav>
+
       <main className="flex-1">
         <Outlet />
       </main>
@@ -164,7 +157,7 @@ export default function Layout() {
           <img
             src="/images/logo-white.png"
             alt="Logo branca da AGMA"
-            className="max-w-[176px]"
+            className="max-w-44"
           />
         </a>
         <span className="text-sm text-white">

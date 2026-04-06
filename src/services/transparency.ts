@@ -18,7 +18,9 @@ export const getTransparency = async (options?: FindAllTransparencyOptions) => {
     },
     {
       name: 'transparencyType',
-      value: options?.transparencyType,
+      value: options?.transparencyType
+        ? encodeURIComponent(options?.transparencyType)
+        : null,
     },
   );
 

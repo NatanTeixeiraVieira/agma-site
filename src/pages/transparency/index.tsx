@@ -19,7 +19,12 @@ export default function TransparencyPage() {
         activeType={currentType}
         onSelect={setActiveType}
       />
-      <DocumentList title={currentType} documents={filteredTransparency} />
+      <DocumentList
+        title={
+          transparencyTypes.find(({ id }) => id === currentType)?.name ?? ''
+        }
+        documents={filteredTransparency}
+      />
     </div>
   );
 }
