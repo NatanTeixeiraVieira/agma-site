@@ -13,7 +13,7 @@ export default function TypeTabs({
 }: TypeTabsProps) {
   return (
     <div className="bg-blue-h px-4 pb-6 pt-2">
-      <div className="flex flex-wrap justify-center gap-3 max-w-5xl mx-auto">
+      <div className="flex flex-wrap justify-center gap-3 mx-auto">
         {types.map((dt) => (
           <button
             key={dt.id}
