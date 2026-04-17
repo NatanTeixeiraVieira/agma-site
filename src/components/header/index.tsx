@@ -2,6 +2,8 @@ import { Link, Outlet } from 'react-router';
 import { Search } from 'lucide-react';
 import { useRef } from 'react';
 import { agmaUrl } from '@/constants/agma-url';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 
 type NavItem = {
   label: string;
@@ -36,6 +38,8 @@ const navItems: NavItem[] = [
 export default function Layout() {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const handleSearchClick = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     window.location.href = `${agmaUrl}?s=${encodeURIComponent(searchInputRef.current?.value ?? '')}`;
@@ -44,18 +48,23 @@ export default function Layout() {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="w-full text-base">
-        <div className="flex items-center justify-between max-w-330 mx-auto px-3 py-6 bg-white">
+        <div className="flex items-center justify-between max-w-330 mx-auto px-4 lg:px-3 py-3 lg:py-6 bg-white">
+          <div className="lg:hidden">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
           <div className="flex items-center gap-4">
             <a href={agmaUrl}>
               <img
                 src="/images/logo.png"
                 alt="Logo AGMA"
-                className="max-w-105 w-full h-auto"
+                className=" max-w-52 lg:max-w-105 w-full h-auto"
               />
             </a>
           </div>
           <div className="flex items-center gap-12">
-            <div className="relative">
+            <div className="relative hidden lg:block">
               <form onSubmit={handleSearchClick}>
                 <input
                   type="text"
@@ -115,7 +124,50 @@ export default function Layout() {
         </div>
       </header>
 
-      <nav className="sticky top-0 z-40 flex items-center justify-center gap-18.5 py-5 bg-grey font-semibold w-full left-0 right-0">
+      {isMenuOpen && (
+        <div className="lg:hidden mx-8 bg-white">
+          <div className="relative">
+            <form onSubmit={handleSearchClick}>
+              <input
+                type="text"
+                placeholder="Pesquisar..."
+                ref={searchInputRef}
+                className="w-full bg-grey h-11.5 rounded-lg py-2 p-2.5 pr-10 outline-none"
+              />
+              <button type="submit">
+                <Search className="absolute right-4 cursor-pointer top-3 w-5 h-5 text-black" />
+              </button>
+            </form>
+          </div>
+          <ul className="flex flex-col divide-y-2 divide-zinc-200/40">
+            {navItems.map((item) =>
+              item.to ? (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex justify-center items-center gap-3 px-4 py-2"
+                >
+                  <img src={item.icon} width={20} />
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex justify-center items-center gap-3 px-4 py-2"
+                >
+                  <img src={item.icon} width={20} />
+                  {item.label}
+                </a>
+              ),
+            )}
+          </ul>
+        </div>
+      )}
+
+      <nav className="sticky max-xl:text-sm hidden lg:flex top-0 z-40 items-center justify-center gap-4 xl:gap-8 2xl:gap-18.5 py-5 bg-grey font-semibold w-full left-0 right-0">
         {navItems.map((item) =>
           item.to ? (
             <Link
@@ -152,7 +204,7 @@ export default function Layout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="flex justify-between p-20 bg-black items-center w-full">
+      <footer className="flex gap-4 max-md:flex-col max-md:gap-12 justify-between p-20 bg-black items-center w-full">
         <a href={agmaUrl}>
           <img
             src="/images/logo-white.png"
@@ -160,7 +212,7 @@ export default function Layout() {
             className="max-w-44"
           />
         </a>
-        <span className="text-sm text-white">
+        <span className="text-sm text-center text-white">
           Associação Guarapuava Mundo Azul | Todos os Direitos Reservados © 2022
         </span>
       </footer>

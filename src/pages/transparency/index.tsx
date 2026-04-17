@@ -7,8 +7,8 @@ export default function TransparencyPage() {
   const {
     currentType,
     filteredTransparency,
-    setActiveType,
     transparencyTypes,
+    setActiveType,
   } = useTransparency();
 
   return (
